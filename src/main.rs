@@ -1,8 +1,13 @@
 use clap::{Args, Parser, Subcommand};
+use types::Raider;
 
+mod api_types;
 mod types;
 
-const URL: &str = "http:/localhost:8000";
+mod global_opts;
+
+pub const SERVER_URL: &str = "http://localhost:8000";
+
 
 #[derive(Debug, Parser)]
 #[clap(name = "raid", version)]
@@ -17,7 +22,7 @@ pub struct App {
 
 #[derive(Debug, Args)]
 pub struct GlobalOpts {
-    #[clap(long)]
+    #[clap(long, default_value_t = 100)]
     num_raiders: usize,
 }
 
@@ -35,6 +40,13 @@ enum Command {
 #[tokio::main]
 async fn main() {
     let args = App::parse();
+
+    let raider = Raider::from_credentials("ainz@nazarick.gov", "sorcererking").await;
+    println!("{:#?}", raider);
+
+
+
+
 }
 
 /*
