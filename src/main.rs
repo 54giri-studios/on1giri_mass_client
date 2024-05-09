@@ -2,7 +2,9 @@ use clap::{Args, Parser, Subcommand};
 use types::Raider;
 
 mod api_types;
+mod raid;
 mod types;
+pub mod utils;
 
 mod global_opts;
 
@@ -22,31 +24,51 @@ pub struct App {
 
 #[derive(Debug, Args)]
 pub struct GlobalOpts {
-    #[clap(long, default_value_t = 100)]
+    #[clap(long, default_value_t = 10)]
     num_raiders: usize,
+
+    #[clap(long, default_value = "raiders.json")]
+    raider_file: String,
+
+    #[clap(long, default_value_t = 4)]
+    mail_word_count: u32,
+
+    #[clap(long, default_value_t = 4)]
+    password_word_count: u32
+}
+
+#[derive(Debug, Clone, Args)]
+pub struct RaidArgs {
+    #[clap(long, required = true)]
+    channel_id: i32,
+
+    #[clap(long, default_value_t = 5)]
+    message_length_min: u32,
+
+    #[clap(long, default_value_t = 20)]
+    message_length_max: u32,
 }
 
 #[derive(Debug, Subcommand)]
 enum Command {
     Raid {
-        #[clap(long, required = true)]
-        guild_id: i32,
-
-        #[clap(long, required = true)]
-        channel_id: i32
-    }
+        #[clap(flatten)]
+        args: RaidArgs,
+    },
+    Other {}
 }
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    env_logger::init();
     let args = App::parse();
 
-    let raider = Raider::from_credentials("ainz@nazarick.gov", "sorcererking").await;
-    println!("{:#?}", raider);
+    let raiders: Vec<Raider> = raid::setup_raid(args.global_opts).await?;
 
+    if let Command::Raid { args } = args.command {
+    }
 
-
-
+    Ok(())
 }
 
 /*

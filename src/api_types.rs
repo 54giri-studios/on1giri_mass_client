@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
 
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct UserMetadata {
     pub id: i32,
     pub username: String,
@@ -20,26 +20,17 @@ pub struct NewMessage {
     content: String
 }
 
-#[derive(Debug, Deserialize)]
-pub struct Channel {
-    /// It's globally unique id
-    pub id: i32,
-    /// The guild's id that it belongs to
-    /// Must refer to an actual [crate::Guild]
-    pub guild_id: i32,
-    /// It's display name
-    pub name: String,
-    /// The kind of the channel
-    /// Must refer to an actual [crate::ChannelKind]
-    pub kind: String
+impl NewMessage {
+    pub fn new(channel_id: i32, author_id: i32, content: String) -> Self {
+        Self { channel_id, author_id, content }
+    }
 }
 
-
 #[derive(Debug, Deserialize)]
-pub struct PopulatedMessage {
+pub struct Message {
     id: i32,
-    channel: Channel,
-    author: UserMetadata,
+    author_id: i32,
+    channel_id: i32,
     content: String,
     creation_date: DateTime<Utc>,
 }
