@@ -30,7 +30,7 @@ pub struct GlobalOpts {
     #[clap(long, default_value = "raiders.json")]
     raider_file: String,
 
-    #[clap(long, default_value_t = 4)]
+    #[clap(long, default_value_t = 3)]
     mail_word_count: u32,
 
     #[clap(long, default_value_t = 4)]
